@@ -1,34 +1,34 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Note
+from .models import Scribble
 from . import db
 import json
 
-views = Blueprint('views', __name__)
+inscriptionviews = Blueprint('inscriptionviews', __name__)
 
 
-@views.route('/', methods=['GET', 'POST'])
+@inscriptionviews.route('/', methods=['GET', 'POST'])
 @login_required
-def home():
+def Home():
     if request.method == 'POST':
         note = request.form.get('note')
 
         if len(note) < 1:
             flash('Scribble is too short!', category='error')
         else:
-            new_note = Note(data=note, user_id=current_user.id)
-            db.session.add(new_note)
+            new_scribble = Scribble(data=note, user_id=current_user.id)
+            db.session.add(new_scribble)
             db.session.commit()
             flash('Scribble added successfully!', category='success')
 
-    return render_template("home.html", user=current_user)
+    return render_template("Home.html", user=current_user)
 
 
-@views.route('/delete-note', methods=['POST'])
-def delete_note():
+@inscriptionviews.route('/delete-inscription', methods=['POST'])
+def delete_inscription():
     note = json.loads(request.data)
     noteId = note['noteId']
-    note = Note.query.get(noteId)
+    note = Scribble.query.get(noteId)
     if note:
         if note.user_id == current_user.id:
             db.session.delete(note)

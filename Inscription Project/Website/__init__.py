@@ -4,27 +4,27 @@ from os import path
 from flask_login import LoginManager
 
 db = SQLAlchemy()
-DB_NAME = "database.db"
+Database_Name = "Inscriptiondatabase.db"
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'PythonCA70'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{Database_Name}'
     db.init_app(app)
 
-    from .views import views
-    from .auth import auth
+    from .inscriptionviews import inscriptionviews
+    from .inscriptionauth import inscriptionauth
 
-    app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(inscriptionviews, url_prefix='/')
+    app.register_blueprint(inscriptionauth, url_prefix='/')
 
-    from .models import User, Note
+    from .models import User, Scribble
 
     create_database(app)
 
     login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = 'inscriptionauth.Login'
     login_manager.init_app(app)
 
     @login_manager.user_loader
@@ -35,6 +35,6 @@ def create_app():
 
 
 def create_database(app):
-    if not path.exists('website/' + DB_NAME):
+    if not path.exists('website/' + Database_Name):
         db.create_all(app=app)
-        print('Created Database!')
+        print('Inscription Project Database Created!')
